@@ -9,5 +9,5 @@ app.use(express.json())
 
 app.get('/templates', (req, res) => {
     /* res.json(data) */
-    res.send('sup nig')
+    res.send('Hello World')
 })
