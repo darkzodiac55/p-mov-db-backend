@@ -9,13 +9,9 @@ const templates = [
     { order: 1, title: "Ghost in the Shell", url: "https://d3tvwjfge35btc.cloudfront.net/Assets/39/608/L_p0151960839.jpg", rating: "3", year: "1995" }
 ]
 
-const userMovs = [
+let userMovs = [
     
 ]
-
-app.use(cors())
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
 
 const logger = (req,res,next) =>{
     const method = req.method
@@ -25,12 +21,19 @@ const logger = (req,res,next) =>{
     let minutes = time.getMinutes();
     let month = ("0" + (time.getMonth() + 1)).slice(-2);
     let date = ("0" + time.getDate()).slice(-2);
-    console.log(date + "-" + month + " " + hours + ":" + minutes);
+    console.log(method, url ,date + "-" + month + " " + hours + ":" + minutes);
     next()
 
 }
 
-app.get('/templates', logger, (req, res) => {
+app.use(logger)
+app.use(cors())
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+
+
+
+app.get('/templates', (req, res) => {
     res.json(templates)
     
 })
@@ -38,6 +41,17 @@ app.get('/templates', logger, (req, res) => {
 app.get('/usrmovs', (req, res) => {
     res.json(userMovs)
     
+})
+
+app.delete('/usrmovs/:id', (req, res) => {
+    let toDel = Number(req.params.id)
+    /* for (const mov of userMovs) {
+        if (mov.id === Number(req.params.id)) {
+            console.log('mothereffer');
+        }
+    } */
+    userMovs = userMovs.filter((ele)=>ele.id !== toDel)
+    res.status(200).json({success:true})
 })
 
 app.post('/nmov', (req,res) => {
