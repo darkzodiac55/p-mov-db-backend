@@ -1,14 +1,15 @@
 const express = require('express')
 const cors = require('cors')
 
-/* const fs = require('fs/promises');
-
-async function cr() {
+/* async function cr() {
     await fs.writeFile('usermovs.json', 'cicik')
 } */
 
 
 const templates = require('./templates0.json')
+const userMovs = require('./usermovs.json')
+const logger = require('./middleware/logger')
+const writerMiddleware = require('./middleware/writer')
 const app = express()
 
 /* const templates = [
@@ -17,24 +18,6 @@ const app = express()
     { order: 1, title: "Ghost in the Shell", url: "https://d3tvwjfge35btc.cloudfront.net/Assets/39/608/L_p0151960839.jpg", rating: "3", year: "1995" }
 ] */
 
-
-
-let userMovs = [
-    
-]
-
-const logger = (req,res,next) =>{
-    const method = req.method
-    const url = req.url
-    const time = new Date()
-    let hours = time.getHours()
-    let minutes = time.getMinutes();
-    let month = ("0" + (time.getMonth() + 1)).slice(-2);
-    let date = ("0" + time.getDate()).slice(-2);
-    console.log(method, url ,date + "-" + month + " " + hours + ":" + minutes);
-    next()
-
-}
 
 app.use(logger)
 app.use(cors())
@@ -64,10 +47,9 @@ app.delete('/usrmovs/:id', (req, res) => {
     res.status(200).json({success:true})
 })
 
-app.post('/usrmovs', (req,res) => { /////restful route
+app.post('/usrmovs', writerMiddleware, (req,res) => { /////restful route
     console.log(req.body);
-    const {nmov} = req.body ////destructure out for security
-    userMovs.push(nmov)   
+    
     res.status(201).send({success:true})
 })
 
