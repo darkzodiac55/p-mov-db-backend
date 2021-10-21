@@ -7,9 +7,10 @@ const cors = require('cors')
 
 
 const templates = require('./templates0.json')
-const userMovs = require('./usermovs.json')
+let userMovs = require('./usermovs.json')
 const logger = require('./middleware/logger')
 const writerMiddleware = require('./middleware/writer')
+const deleterMiddleware = require('./middleware/deleter')
 const app = express()
 
 /* const templates = [
@@ -36,14 +37,8 @@ app.get('/usrmovs', (req, res) => {
     
 })
 
-app.delete('/usrmovs/:id', (req, res) => {
-    let toDel = Number(req.params.id)
-    /* for (const mov of userMovs) {
-        if (mov.id === Number(req.params.id)) {
-            console.log('mothereffer');
-        }
-    } */
-    userMovs = userMovs.filter((ele)=>ele.id !== toDel)
+app.delete('/usrmovs/:id', deleterMiddleware, (req, res) => {
+    
     res.status(200).json({success:true})
 })
 
